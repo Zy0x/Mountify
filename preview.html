@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mountify - Interactive UI & Architecture Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --md-sys-color-primary: #7C4DFF;
+      --md-sys-color-on-primary: #FFFFFF;
+      --md-sys-color-primary-container: #2A1B4E;
+      --md-sys-color-on-primary-container: #EADDFF;
+      --md-sys-color-secondary: #03DAC6;
+      --md-sys-color-background: #0D0E15;
+      --md-sys-color-surface: #13141F;
+      --md-sys-color-surface-variant: #1F202E;
+      --md-sys-color-on-surface: #E3E2E6;
+      --md-sys-color-on-surface-variant: #C4C5D0;
+      --md-sys-color-outline: #444655;
+      --md-sys-color-error: #FF5252;
+      --md-sys-color-success: #00E676;
+      --md-sys-color-warning: #FFD600;
+      --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    [data-theme="light"] {
+      --md-sys-color-primary: #6200EE;
+      --md-sys-color-on-primary: #FFFFFF;
+      --md-sys-color-primary-container: #EADDFF;
+      --md-sys-color-on-primary-container: #21005D;
+      --md-sys-color-secondary: #018786;
+      --md-sys-color-background: #F8F9FE;
+      --md-sys-color-surface: #FFFFFF;
+      --md-sys-color-surface-variant: #E7E0EC;
+      --md-sys-color-on-surface: #1C1B1F;
+      --md-sys-color-on-surface-variant: #49454F;
+      --md-sys-color-outline: #79747E;
+      --md-sys-color-error: #BA1A1A;
+      --md-sys-color-success: #1B5E20;
+      --md-sys-color-warning: #E65100;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background: #090A0F;
+      color: #E3E2E6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Studio Bar */
+    .studio-bar {
+      background: #11121C;
+      border-bottom: 1px solid #232536;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      z-index: 100;
+    }
+
+    .studio-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      background: linear-gradient(135deg, #7C4DFF, #536DFE);
+      color: white;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .studio-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #FFFFFF;
+    }
+
+    .studio-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .control-btn {
+      background: #1C1E2D;
+      border: 1px solid #2E3146;
+      color: #C4C5D0;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      min-height: 40px;
+    }
+
+    .control-btn:hover {
+      background: #25283B;
+      color: #FFFFFF;
+      border-color: #7C4DFF;
+    }
+
+    .control-btn.active {
+      background: #7C4DFF;
+      color: #FFFFFF;
+      border-color: #7C4DFF;
+    }
+
+    /* Workspace */
+    .workspace {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 32px 16px;
+      background: radial-gradient(circle at top, #141624 0%, #08090E 100%);
+      overflow: auto;
+    }
+
+    /* Device Container */
+    .device-frame {
+      width: 412px;
+      height: 892px;
+      background: var(--md-sys-color-background);
+      border-radius: 44px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 10px #1E202E, 0 0 0 12px #2B2D40;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .device-frame.landscape {
+      width: 892px;
+      height: 412px;
+    }
+
+    .device-frame.tablet {
+      width: 768px;
+      height: 1024px;
+      border-radius: 32px;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      height: 38px;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--md-sys-color-on-surface);
+      background: var(--md-sys-color-background);
+      z-index: 10;
+    }
+
+    .notch-camera {
+      width: 12px;
+      height: 12px;
+      background: #000;
+      border-radius: 50%;
+    }
+
+    /* App Header */
+    .app-header {
+      padding: 12px 20px 8px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--md-sys-color-background);
+    }
+
+    .app-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--md-sys-color-on-surface);
+    }
+
+    .root-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(0, 230, 118, 0.12);
+      color: var(--md-sys-color-success);
+      border: 1px solid rgba(0, 230, 118, 0.25);
+    }
+
+    .root-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--md-sys-color-success);
+    }
+
+    /* App Content */
+    .app-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 16px 80px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Screen Views */
+    .screen-view {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .screen-view.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--md-sys-color-surface);
+      border-radius: 18px;
+      padding: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--md-sys-color-on-surface);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Storage Progress Bar */
+    .progress-track {
+      height: 10px;
+      border-radius: 100px;
+      background: var(--md-sys-color-surface-variant);
+      overflow: hidden;
+      margin: 10px 0;
+      display: flex;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--md-sys-color-primary), #00E5FF);
+      border-radius: 100px;
+      transition: width 0.5s ease;
+    }
+
+    .storage-stats {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--md-sys-color-on-surface-variant);
+    }
+
+    /* Game Item */
+    .game-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      background: var(--md-sys-color-surface-variant);
+      border-radius: 14px;
+      margin-bottom: 8px;
+      border: 1px solid transparent;
+      transition: border 0.2s ease;
+    }
+
+    .game-item:hover {
+      border-color: rgba(124, 77, 255, 0.4);
+    }
+
+    .game-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .game-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 16px;
+      color: #FFFFFF;
+    }
+
+    .game-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--md-sys-color-on-surface);
+    }
+
+    .game-sub {
+      font-size: 11px;
+      color: var(--md-sys-color-on-surface-variant);
+      margin-top: 2px;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 46px;
+      height: 26px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--md-sys-color-outline);
+      transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--md-sys-color-primary);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    /* Logs view */
+    .log-box {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      line-height: 1.6;
+      background: #0A0A10;
+      border-radius: 12px;
+      padding: 12px;
+      color: #A0A5BD;
+      max-height: 380px;
+      overflow-y: auto;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .log-tag-info { color: #64B5F6; }
+    .log-tag-success { color: #81C784; }
+    .log-tag-warn { color: #FFD54F; }
+
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      background: var(--md-sys-color-surface);
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 8px;
+      z-index: 20;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      color: var(--md-sys-color-on-surface-variant);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      min-width: 56px;
+      min-height: 48px;
+    }
+
+    .nav-btn.active {
+      color: var(--md-sys-color-primary);
+    }
+
+    .nav-icon {
+      font-size: 18px;
+    }
+
+    /* Action FAB */
+    .fab-btn {
+      background: var(--md-sys-color-primary);
+      color: white;
+      border: none;
+      padding: 14px 20px;
+      border-radius: 16px;
+      font-weight: 600;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(124, 77, 255, 0.4);
+      margin: 8px 0;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .action-btn-secondary {
+      background: var(--md-sys-color-surface-variant);
+      color: var(--md-sys-color-on-surface);
+      border: 1px solid var(--md-sys-color-outline);
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body data-theme="dark">
+
+  <!-- Top Studio Control Bar -->
+  <header class="studio-bar">
+    <div class="studio-brand">
+      <div class="brand-badge">MOUNTIFY 1.0.0</div>
+      <div class="studio-title">Interactive UI & Device Inspector</div>
+    </div>
+    <div class="studio-controls">
+      <button class="control-btn active" id="btn-portrait" onclick="setOrientation('portrait')">Portrait (1080x2460)</button>
+      <button class="control-btn" id="btn-landscape" onclick="setOrientation('landscape')">Landscape</button>
+      <button class="control-btn" id="btn-tablet" onclick="setOrientation('tablet')">Tablet</button>
+      <button class="control-btn" id="btn-theme" onclick="toggleTheme()">Toggle Theme</button>
+    </div>
+  </header>
+
+  <!-- Main Viewport Workspace -->
+  <main class="workspace">
+    <div class="device-frame" id="device">
+      <!-- Device Status Bar -->
+      <div class="status-bar">
+        <span>09:41</span>
+        <div class="notch-camera"></div>
+        <span>5G · 100%</span>
+      </div>
+
+      <!-- App Header -->
+      <div class="app-header">
+        <div>
+          <div class="app-title" id="page-title">Dashboard</div>
+        </div>
+        <div class="root-badge">
+          <div class="root-dot"></div>
+          <span>Root Granted (KSU/Magisk)</span>
+        </div>
+      </div>
+
+      <!-- Scrollable App Content -->
+      <div class="app-content">
+
+        <!-- SCREEN 1: DASHBOARD -->
+        <section class="screen-view active" id="view-dashboard">
+          <div class="card">
+            <div class="card-title">
+              <span>Penyimpanan MicroSD</span>
+              <span style="color: var(--md-sys-color-secondary); font-size: 12px;">ext4 /data/sdext2</span>
+            </div>
+            <div class="storage-stats">
+              <span>Terpakai: <strong>142.4 GB</strong></span>
+              <span>Total: <strong>256.0 GB</strong></span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width: 55.6%;"></div>
+            </div>
+            <div class="storage-stats" style="margin-top: 4px;">
+              <span>Tersedia: <strong>113.6 GB (44.4%)</strong></span>
+              <span>Bind Mount: <strong>Aktif</strong></span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">
+              <span>Ringkasan Game Terpasang</span>
+              <span style="font-size: 12px; color: var(--md-sys-color-primary);">4 Game Dikelola</span>
+            </div>
+            <div class="game-item">
+              <div class="game-meta">
+                <div class="game-icon" style="background: linear-gradient(135deg, #FF5252, #FF7A00);">G</div>
+                <div>
+                  <div class="game-title">Genshin Impact</div>
+                  <div class="game-sub">com.miHoYo.GenshinImpact · 24.8 GB</div>
+                </div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="game-item">
+              <div class="game-meta">
+                <div class="game-icon" style="background: linear-gradient(135deg, #7C4DFF, #536DFE);">H</div>
+                <div>
+                  <div class="game-title">Honkai: Star Rail</div>
+                  <div class="game-sub">com.HoYoverse.hkrpgoversea · 18.2 GB</div>
+                </div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="game-item">
+              <div class="game-meta">
+                <div class="game-icon" style="background: linear-gradient(135deg, #00E676, #00B0FF);">Z</div>
+                <div>
+                  <div class="game-title">Zenless Zone Zero</div>
+                  <div class="game-sub">com.HoYoverse.Nap · 22.1 GB</div>
+                </div>
+              </div>
+              <label class="switch">
+                <input type="checkbox">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <button class="fab-btn" onclick="showScreen('games')">
+            <span>+ Kelola Game & Migrasi Data</span>
+          </button>
+        </section>
+
+        <!-- SCREEN 2: GAMES -->
+        <section class="screen-view" id="view-games">
+          <div class="card">
+            <div class="card-title">
+              <span>Daftar Game Terdeteksi</span>
+              <span style="font-size: 12px; color: var(--md-sys-color-secondary);">Filter: Semua</span>
+            </div>
+            <p style="font-size: 12px; color: var(--md-sys-color-on-surface-variant); margin-bottom: 12px;">
+              Aktifkan toggle untuk mem-bind mount data game secara langsung dari MicroSD ke penyimpanan internal.
+            </p>
+
+            <div class="game-item">
+              <div class="game-meta">
+                <div class="game-icon" style="background: linear-gradient(135deg, #FF5252, #FF7A00);">G</div>
+                <div>
+                  <div class="game-title">Genshin Impact</div>
+                  <div class="game-sub">Status: Terpasang di MicroSD (Bind Active)</div>
+                </div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="game-item">
+              <div class="game-meta">
+                <div class="game-icon" style="background: linear-gradient(135deg, #7C4DFF, #536DFE);">H</div>
+                <div>
+                  <div class="game-title">Honkai: Star Rail</div>
+                  <div class="game-sub">Status: Terpasang di MicroSD (Bind Active)</div>
+                </div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="game-item">
+              <div class="game-meta">
+                <div class="game-icon" style="background: linear-gradient(135deg, #E040FB, #7C4DFF);">W</div>
+                <div>
+                  <div class="game-title">Wuthering Waves</div>
+                  <div class="game-sub">Status: Di Internal (Belum Dimigrasi)</div>
+                </div>
+              </div>
+              <label class="switch">
+                <input type="checkbox">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <button class="action-btn-secondary" onclick="alert('Membuka dialog migrasi data fisik ke MicroSD.')">
+              Pindahkan Data Game ke MicroSD
+            </button>
+          </div>
+        </section>
+
+        <!-- SCREEN 3: STORAGE -->
+        <section class="screen-view" id="view-storage">
+          <div class="card">
+            <div class="card-title">
+              <span>Partisi Penyimpanan</span>
+            </div>
+            <div style="font-size: 13px; line-height: 1.8;">
+              <div><strong>Internal Storage:</strong> /data/media/0 (48.2 GB Bebas)</div>
+              <div><strong>MicroSD Path:</strong> /data/sdext2 (113.6 GB Bebas)</div>
+              <div><strong>Format:</strong> ext4 (Support Symlink & SELinux)</div>
+              <div><strong>Mount Namespace:</strong> Global (/proc/1/ns/mnt)</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">
+              <span>Backup & Restore Database</span>
+            </div>
+            <p style="font-size: 12px; color: var(--md-sys-color-on-surface-variant); margin-bottom: 12px;">
+              Ekspor database terenkripsi AES-256 dan konfigurasi game ke MicroSD atau penyimpanan lokal.
+            </p>
+            <button class="fab-btn" onclick="alert('Backup terenkripsi berhasil dibuat!')">
+              Buat Backup Database (Encrypted)
+            </button>
+            <button class="action-btn-secondary" onclick="alert('Pilih file backup .mountify-bak')">
+              Pulihkan Database dari File
+            </button>
+          </div>
+        </section>
+
+        <!-- SCREEN 4: LOGS -->
+        <section class="screen-view" id="view-logs">
+          <div class="card">
+            <div class="card-title">
+              <span>Log Sistem & Aktivitas Mount</span>
+              <button style="background:none; border:none; color:var(--md-sys-color-primary); cursor:pointer; font-size:12px;">Bersihkan</button>
+            </div>
+            <div class="log-box">
+              <div><span class="log-tag-info">[INFO]</span> Mountify service initialized.</div>
+              <div><span class="log-tag-info">[INFO]</span> Root permission verified via libsu (uid 0).</div>
+              <div><span class="log-tag-success">[SUCCESS]</span> MicroSD detected at /data/sdext2 (ext4).</div>
+              <div><span class="log-tag-info">[INFO]</span> Binding com.miHoYo.GenshinImpact -> /data/sdext2...</div>
+              <div><span class="log-tag-success">[SUCCESS]</span> Bind mount active in global namespace.</div>
+              <div><span class="log-tag-info">[INFO]</span> Binding com.HoYoverse.hkrpgoversea -> /data/sdext2...</div>
+              <div><span class="log-tag-success">[SUCCESS]</span> Bind mount active in global namespace.</div>
+              <div><span class="log-tag-info">[INFO]</span> SELinux context applied: u:object_r:media_rw_data_file:s0</div>
+              <div><span class="log-tag-info">[INFO]</span> Listening for game launch broadcast events...</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SCREEN 5: ABOUT -->
+        <section class="screen-view" id="view-about">
+          <div class="card" style="text-align: center; padding: 24px 16px;">
+            <div class="brand-badge" style="display:inline-block; margin-bottom: 12px;">MOUNTIFY</div>
+            <div style="font-size: 16px; font-weight: 700; color: var(--md-sys-color-on-surface);">Mountify Mobile</div>
+            <div style="font-size: 12px; color: var(--md-sys-color-on-surface-variant); margin-top: 4px;">Versi 1.0.0 (Build 1)</div>
+            <div style="font-size: 13px; color: #7C4DFF; font-weight: 600; margin-top: 12px;">Developed by Noir</div>
+            <div style="margin-top: 16px; font-size: 12px; line-height: 1.6; color: var(--md-sys-color-on-surface-variant); text-align: left; background: var(--md-sys-color-surface-variant); padding: 12px; border-radius: 12px;">
+              Solusi cerdas bind-mount penyimpanan game Android ke MicroSD berkecepatan tinggi dengan integrasi KernelSU / Magisk root dan isolasi penuh.
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Bottom Navigation Bar -->
+      <nav class="bottom-nav">
+        <button class="nav-btn active" onclick="showScreen('dashboard')">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-btn" onclick="showScreen('games')">
+          <span class="nav-icon">🎮</span>
+          <span>Games</span>
+        </button>
+        <button class="nav-btn" onclick="showScreen('storage')">
+          <span class="nav-icon">💾</span>
+          <span>Storage</span>
+        </button>
+        <button class="nav-btn" onclick="showScreen('logs')">
+          <span class="nav-icon">📜</span>
+          <span>Logs</span>
+        </button>
+        <button class="nav-btn" onclick="showScreen('about')">
+          <span class="nav-icon">ℹ️</span>
+          <span>About</span>
+        </button>
+      </nav>
+    </div>
+  </main>
+
+  <script>
+    function showScreen(name) {
+      document.querySelectorAll('.screen-view').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      
+      const targetView = document.getElementById('view-' + name);
+      if (targetView) targetView.classList.add('active');
+      
+      const buttons = document.querySelectorAll('.nav-btn');
+      const names = ['dashboard', 'games', 'storage', 'logs', 'about'];
+      const idx = names.indexOf(name);
+      if (idx !== -1 && buttons[idx]) {
+        buttons[idx].classList.add('active');
+      }
+
+      const titles = {
+        dashboard: 'Dashboard',
+        games: 'Game Management',
+        storage: 'Storage & Backup',
+        logs: 'Activity Logs',
+        about: 'About Mountify'
+      };
+      document.getElementById('page-title').textContent = titles[name] || 'Mountify';
+    }
+
+    function setOrientation(mode) {
+      const device = document.getElementById('device');
+      document.querySelectorAll('.control-btn').forEach(b => {
+        if (b.id !== 'btn-theme') b.classList.remove('active');
+      });
+      
+      device.className = 'device-frame';
+      if (mode === 'landscape') {
+        device.classList.add('landscape');
+        document.getElementById('btn-landscape').classList.add('active');
+      } else if (mode === 'tablet') {
+        device.classList.add('tablet');
+        document.getElementById('btn-tablet').classList.add('active');
+      } else {
+        document.getElementById('btn-portrait').classList.add('active');
+      }
+    }
+
+    function toggleTheme() {
+      const current = document.body.getAttribute('data-theme');
+      const next = current === 'light' ? 'dark' : 'light';
+      document.body.setAttribute('data-theme', next);
+    }
+  </script>
+</body>
+</html>
