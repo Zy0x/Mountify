@@ -265,6 +265,133 @@
       justify-content: space-between;
     }
 
+    /* Telemetry KPI Cards */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .kpi-card {
+      background: var(--md-sys-color-surface);
+      border-radius: 14px;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .kpi-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--md-sys-color-on-surface-variant);
+      text-transform: uppercase;
+    }
+
+    .kpi-val {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--md-sys-color-on-surface);
+      margin: 4px 0 2px;
+    }
+
+    .kpi-sub {
+      font-size: 10px;
+      color: var(--md-sys-color-success);
+    }
+
+    /* Command Center Actions */
+    .action-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .btn-act-primary {
+      background: linear-gradient(135deg, #7C4DFF, #536DFE);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 11px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: opacity 0.2s;
+    }
+
+    .btn-act-primary:hover { opacity: 0.9; }
+
+    .btn-act-secondary {
+      background: transparent;
+      color: #FF5252;
+      border: 1px solid rgba(255, 82, 82, 0.4);
+      border-radius: 12px;
+      padding: 11px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+
+    .btn-act-secondary:hover { background: rgba(255, 82, 82, 0.08); }
+
+    /* Terminal Console */
+    .terminal-card {
+      background: #0A0D15;
+      border-radius: 14px;
+      border: 1px solid #232536;
+      padding: 12px;
+      font-family: var(--font-mono);
+    }
+
+    .terminal-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding-bottom: 6px;
+      margin-bottom: 8px;
+    }
+
+    .term-dots {
+      display: flex;
+      gap: 5px;
+    }
+
+    .term-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .term-dot.red { background: #FF5F56; }
+    .term-dot.yellow { background: #FFBD2E; }
+    .term-dot.green { background: #27C93F; }
+
+    .term-title {
+      font-size: 10px;
+      color: #A0A5BD;
+      font-weight: 500;
+    }
+
+    .term-body {
+      font-size: 11px;
+      line-height: 1.5;
+      color: #A0A5BD;
+    }
+
+    .term-time { color: #536DFE; margin-right: 4px; }
+    .term-info { color: #64B5F6; }
+    .term-succ { color: #00E676; }
+    .term-warn { color: #FFD600; }
+
     /* Storage Progress Bar */
     .progress-track {
       height: 10px;
@@ -481,7 +608,7 @@
   <!-- Top Studio Control Bar -->
   <header class="studio-bar">
     <div class="studio-brand">
-      <div class="brand-badge">MOUNTIFY 1.0.0</div>
+      <div class="brand-badge">MOUNTIFY v2.1.3</div>
       <div class="studio-title">Interactive UI & Device Inspector</div>
     </div>
     <div class="studio-controls">
@@ -518,35 +645,62 @@
 
         <!-- SCREEN 1: DASHBOARD -->
         <section class="screen-view active" id="view-dashboard">
+          <!-- Telemetry KPI Indicators -->
+          <div class="kpi-row">
+            <div class="kpi-card">
+              <div class="kpi-label">Root Engine</div>
+              <div class="kpi-val">Magisk Active</div>
+              <div class="kpi-sub">SELinux: Enforcing</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Game Mounts</div>
+              <div class="kpi-val">5 / 8 Games</div>
+              <div class="kpi-sub">62% Terpasang</div>
+            </div>
+          </div>
+
+          <!-- MicroSD Storage Telemetry Card -->
           <div class="card">
             <div class="card-title">
               <span>Penyimpanan MicroSD</span>
-              <span style="color: var(--md-sys-color-secondary); font-size: 12px;">ext4 /data/sdext2</span>
+              <span style="background: rgba(3, 218, 198, 0.15); color: var(--md-sys-color-secondary); font-size: 11px; padding: 2px 8px; border-radius: 6px; font-weight: 600;">EXT4</span>
             </div>
-            <div class="storage-stats">
-              <span>Terpakai: <strong>142.4 GB</strong></span>
-              <span>Total: <strong>256.0 GB</strong></span>
+            <div style="font-family: var(--font-mono); font-size: 11px; color: #8F94AB; margin-bottom: 8px;">
+              /dev/block/mmcblk1p2 &rarr; /data/sdext2
             </div>
             <div class="progress-track">
               <div class="progress-fill" style="width: 55.6%;"></div>
             </div>
-            <div class="storage-stats" style="margin-top: 4px;">
-              <span>Tersedia: <strong>113.6 GB (44.4%)</strong></span>
-              <span>Bind Mount: <strong>Aktif</strong></span>
+            <div class="storage-stats">
+              <span>Terpakai: <strong>142.4 GB</strong></span>
+              <span>Bebas: <strong>113.6 GB</strong></span>
+              <span>Total: <strong>256.0 GB (55.6%)</strong></span>
             </div>
           </div>
 
+          <!-- Quick Action Command Center -->
+          <div class="action-row">
+            <button class="btn-act-primary" onclick="alert('Mount All diaktifkan')">
+              <span>&#9654; Mount All</span>
+            </button>
+            <button class="btn-act-secondary" onclick="alert('Unmount All dieksekusi')">
+              <span>&#9632; Unmount All</span>
+            </button>
+          </div>
+
+          <!-- Managed Game Mounts -->
           <div class="card">
             <div class="card-title">
-              <span>Ringkasan Game Terpasang</span>
-              <span style="font-size: 12px; color: var(--md-sys-color-primary);">4 Game Dikelola</span>
+              <span>Game Terpasang</span>
+              <span style="font-size: 11px; color: var(--md-sys-color-primary); font-weight: 600;">4 Game Dikelola</span>
             </div>
+
             <div class="game-item">
               <div class="game-meta">
                 <div class="game-icon" style="background: linear-gradient(135deg, #FF5252, #FF7A00);">G</div>
                 <div>
                   <div class="game-title">Genshin Impact</div>
-                  <div class="game-sub">com.miHoYo.GenshinImpact · 24.8 GB</div>
+                  <div class="game-sub">com.miHoYo.GenshinImpact &bull; <strong>PKG &bull; 24.8 GB</strong></div>
                 </div>
               </div>
               <label class="switch">
@@ -557,10 +711,24 @@
 
             <div class="game-item">
               <div class="game-meta">
-                <div class="game-icon" style="background: linear-gradient(135deg, #7C4DFF, #536DFE);">H</div>
+                <div class="game-icon" style="background: linear-gradient(135deg, #7C4DFF, #536DFE);">W</div>
+                <div>
+                  <div class="game-title">Wuthering Waves</div>
+                  <div class="game-sub">com.kurogame.wutheringwaves.global &bull; <strong>FILES &bull; 19.4 GB</strong></div>
+                </div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="game-item">
+              <div class="game-meta">
+                <div class="game-icon" style="background: linear-gradient(135deg, #00E676, #00B0FF);">H</div>
                 <div>
                   <div class="game-title">Honkai: Star Rail</div>
-                  <div class="game-sub">com.HoYoverse.hkrpgoversea · 18.2 GB</div>
+                  <div class="game-sub">com.HoYoverse.hkrpgoversea &bull; <strong>PKG &bull; 18.2 GB</strong></div>
                 </div>
               </div>
               <label class="switch">
@@ -571,10 +739,10 @@
 
             <div class="game-item">
               <div class="game-meta">
-                <div class="game-icon" style="background: linear-gradient(135deg, #00E676, #00B0FF);">Z</div>
+                <div class="game-icon" style="background: linear-gradient(135deg, #FFB300, #FF6F00);">Z</div>
                 <div>
                   <div class="game-title">Zenless Zone Zero</div>
-                  <div class="game-sub">com.HoYoverse.Nap · 22.1 GB</div>
+                  <div class="game-sub">com.HoYoverse.Nap &bull; <strong>PKG &bull; 22.1 GB</strong></div>
                 </div>
               </div>
               <label class="switch">
@@ -584,9 +752,25 @@
             </div>
           </div>
 
-          <button class="fab-btn" onclick="showScreen('games')">
-            <span>+ Kelola Game & Migrasi Data</span>
-          </button>
+          <!-- Engine Activity Terminal Console -->
+          <div class="terminal-card">
+            <div class="terminal-topbar">
+              <div class="term-dots">
+                <div class="term-dot red"></div>
+                <div class="term-dot yellow"></div>
+                <div class="term-dot green"></div>
+              </div>
+              <span class="term-title">engine.log &bull; live stream</span>
+              <span style="font-size: 10px; color: var(--md-sys-color-secondary); cursor: pointer;" onclick="showScreen('logs')">Buka Log</span>
+            </div>
+            <div class="term-body">
+              <div><span class="term-time">[09:41:02]</span> <span class="term-info">[INFO]</span> Root engine Magisk SU v27.0 detected</div>
+              <div><span class="term-time">[09:41:03]</span> <span class="term-info">[INFO]</span> Checking SELinux context: Enforcing (permissive domain active)</div>
+              <div><span class="term-time">[09:41:04]</span> <span class="term-succ">[OK]</span> Mounted /data/sdext2 (ext4, rw, noatime)</div>
+              <div><span class="term-time">[09:41:05]</span> <span class="term-succ">[OK]</span> Bind mount active: Genshin Impact (/data/data/com.miHoYo.GenshinImpact)</div>
+              <div><span class="term-time">[09:41:06]</span> <span class="term-succ">[OK]</span> Bind mount active: Wuthering Waves (obb + data)</div>
+            </div>
+          </div>
         </section>
 
         <!-- SCREEN 2: GAMES -->
