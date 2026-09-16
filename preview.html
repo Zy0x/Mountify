@@ -527,46 +527,105 @@
     .log-tag-success { color: #81C784; }
     .log-tag-warn { color: #FFD54F; }
 
-    /* Bottom Navigation Bar */
+    /* Modern Glassmorphic Bottom Navigation Bar */
     .bottom-nav {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
       height: 72px;
-      background: var(--md-sys-color-surface);
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(18, 21, 32, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
       display: flex;
       justify-content: space-around;
       align-items: center;
-      padding: 0 8px;
-      z-index: 20;
+      padding: 4px 6px;
+      z-index: 50;
+      box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.45);
     }
 
     .nav-btn {
       background: none;
       border: none;
-      color: var(--md-sys-color-on-surface-variant);
+      color: #7E839B;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      justify-content: center;
+      gap: 3px;
       cursor: pointer;
-      padding: 8px 12px;
+      padding: 6px 4px;
       border-radius: 12px;
       font-size: 11px;
       font-weight: 500;
-      transition: all 0.2s ease;
-      min-width: 56px;
+      transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+      min-width: 52px;
       min-height: 48px;
+      position: relative;
     }
 
-    .nav-btn.active {
-      color: var(--md-sys-color-primary);
+    .nav-icon-pill {
+      width: 44px;
+      height: 28px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.22s ease;
+      background: transparent;
+      border: 1px solid transparent;
+      color: #8E93AB;
     }
 
-    .nav-icon {
-      font-size: 18px;
+    .nav-icon-pill svg {
+      width: 19px;
+      height: 19px;
+      fill: currentColor;
+      transition: transform 0.22s ease;
+    }
+
+    .nav-label {
+      font-size: 10.5px;
+      font-weight: 500;
+      color: #8E93AB;
+      transition: color 0.22s ease, font-weight 0.22s ease;
+    }
+
+    .nav-indicator-dot {
+      width: 0;
+      height: 2.5px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #4C6EF5, #20C997);
+      transition: width 0.22s ease;
+    }
+
+    /* Active Nav Item */
+    .nav-btn.active .nav-icon-pill {
+      background: rgba(76, 110, 245, 0.16);
+      border-color: rgba(76, 110, 245, 0.45);
+      color: #748FFC;
+    }
+
+    .nav-btn.active .nav-icon-pill svg {
+      transform: scale(1.08);
+      fill: #748FFC;
+    }
+
+    .nav-btn.active .nav-label {
+      color: #748FFC;
+      font-weight: 700;
+    }
+
+    .nav-btn.active .nav-indicator-dot {
+      width: 14px;
+      box-shadow: 0 0 8px rgba(76, 110, 245, 0.6);
+    }
+
+    .nav-btn:hover:not(.active) .nav-icon-pill {
+      background: rgba(255, 255, 255, 0.04);
+      color: #C4C7D6;
     }
 
     /* Action FAB */
@@ -608,7 +667,7 @@
   <!-- Top Studio Control Bar -->
   <header class="studio-bar">
     <div class="studio-brand">
-      <div class="brand-badge">MOUNTIFY v2.1.3</div>
+      <div class="brand-badge">MOUNTIFY v2.1.4</div>
       <div class="studio-title">Interactive UI & Device Inspector</div>
     </div>
     <div class="studio-controls">
@@ -883,42 +942,113 @@
           </div>
         </section>
 
-        <!-- SCREEN 5: ABOUT -->
+        <!-- SCREEN 5: SETTINGS -->
+        <section class="screen-view" id="view-settings">
+          <div class="card">
+            <div class="card-title">
+              <span>Konfigurasi Engine</span>
+              <span style="font-size: 11px; color: var(--md-sys-color-secondary);">Root Level</span>
+            </div>
+            
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+              <div>
+                <div style="font-size: 13px; font-weight: 600;">Mount Otomatis Saat Boot</div>
+                <div style="font-size: 11px; color: #8F94AB;">Aktifkan bind-mount game saat perangkat menyala</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+              <div>
+                <div style="font-size: 13px; font-weight: 600;">SELinux Permissive Domain</div>
+                <div style="font-size: 11px; color: #8F94AB;">Bypass batasan context penyimpanan FUSE</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 0;">
+              <div>
+                <div style="font-size: 13px; font-weight: 600;">Notifikasi Aktivitas</div>
+                <div style="font-size: 11px; color: #8F94AB;">Tampilkan notifikasi status saat mount berlangsung</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">
+              <span>Aplikasi & Lisensi</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; cursor: pointer;" onclick="showScreen('about')">
+              <div>
+                <div style="font-size: 13px; font-weight: 600;">Tentang Mountify</div>
+                <div style="font-size: 11px; color: #8F94AB;">Versi 2.1.4 (Build 20104) &bull; Lisensi & Kontributor</div>
+              </div>
+              <span style="color: #748FFC; font-size: 16px;">&rarr;</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- SCREEN 6: ABOUT -->
         <section class="screen-view" id="view-about">
           <div class="card" style="text-align: center; padding: 24px 16px;">
             <div class="brand-badge" style="display:inline-block; margin-bottom: 12px;">MOUNTIFY</div>
             <div style="font-size: 16px; font-weight: 700; color: var(--md-sys-color-on-surface);">Mountify Mobile</div>
-            <div style="font-size: 12px; color: var(--md-sys-color-on-surface-variant); margin-top: 4px;">Versi 1.0.0 (Build 1)</div>
-            <div style="font-size: 13px; color: #7C4DFF; font-weight: 600; margin-top: 12px;">Developed by Noir</div>
+            <div style="font-size: 12px; color: var(--md-sys-color-on-surface-variant); margin-top: 4px;">Versi 2.1.4 (Build 20104)</div>
+            <div style="font-size: 13px; color: #7C4DFF; font-weight: 600; margin-top: 12px;">Developed for Power Users</div>
             <div style="margin-top: 16px; font-size: 12px; line-height: 1.6; color: var(--md-sys-color-on-surface-variant); text-align: left; background: var(--md-sys-color-surface-variant); padding: 12px; border-radius: 12px;">
-              Solusi cerdas bind-mount penyimpanan game Android ke MicroSD berkecepatan tinggi dengan integrasi KernelSU / Magisk root dan isolasi penuh.
+              Solusi bind-mount penyimpanan game Android ke partisi sekunder MicroSD berkecepatan tinggi dengan integrasi Magisk, KernelSU, dan APatch root.
             </div>
           </div>
         </section>
 
       </div>
 
-      <!-- Bottom Navigation Bar -->
+      <!-- Modern Bottom Navigation Bar -->
       <nav class="bottom-nav">
         <button class="nav-btn active" onclick="showScreen('dashboard')">
-          <span class="nav-icon">📊</span>
-          <span>Dashboard</span>
+          <div class="nav-icon-pill">
+            <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+          </div>
+          <span class="nav-label">Dashboard</span>
+          <div class="nav-indicator-dot"></div>
         </button>
         <button class="nav-btn" onclick="showScreen('games')">
-          <span class="nav-icon">🎮</span>
-          <span>Games</span>
+          <div class="nav-icon-pill">
+            <svg viewBox="0 0 24 24"><path d="M21.58 16.09l-1.09-7.66C20.21 6.46 18.52 5 16.53 5H7.47C5.48 5 3.79 6.46 3.51 8.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75 1.56 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm2 3c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+          </div>
+          <span class="nav-label">Games</span>
+          <div class="nav-indicator-dot"></div>
         </button>
         <button class="nav-btn" onclick="showScreen('storage')">
-          <span class="nav-icon">💾</span>
-          <span>Storage</span>
+          <div class="nav-icon-pill">
+            <svg viewBox="0 0 24 24"><path d="M18 2h-8L4.02 8 4 20c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-6 6h-2V4h2v4zm3 0h-2V4h2v4zm3 0h-2V4h2v4z"/></svg>
+          </div>
+          <span class="nav-label">Storage</span>
+          <div class="nav-indicator-dot"></div>
         </button>
         <button class="nav-btn" onclick="showScreen('logs')">
-          <span class="nav-icon">📜</span>
-          <span>Logs</span>
+          <div class="nav-icon-pill">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8h16v10zm-2-1h-6v-2h6v2zm-8.29-3.71L12 11l-2.29-2.29-1.42 1.41L9.17 11l-2.88 2.88 1.42 1.41z"/></svg>
+          </div>
+          <span class="nav-label">Logs</span>
+          <div class="nav-indicator-dot"></div>
         </button>
-        <button class="nav-btn" onclick="showScreen('about')">
-          <span class="nav-icon">ℹ️</span>
-          <span>About</span>
+        <button class="nav-btn" onclick="showScreen('settings')">
+          <div class="nav-icon-pill">
+            <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+          </div>
+          <span class="nav-label">Settings</span>
+          <div class="nav-indicator-dot"></div>
         </button>
       </nav>
     </div>
@@ -933,7 +1063,7 @@
       if (targetView) targetView.classList.add('active');
       
       const buttons = document.querySelectorAll('.nav-btn');
-      const names = ['dashboard', 'games', 'storage', 'logs', 'about'];
+      const names = ['dashboard', 'games', 'storage', 'logs', 'settings'];
       const idx = names.indexOf(name);
       if (idx !== -1 && buttons[idx]) {
         buttons[idx].classList.add('active');
@@ -944,7 +1074,8 @@
         games: 'Game Management',
         storage: 'Storage & Backup',
         logs: 'Activity Logs',
-        about: 'About Mountify'
+        settings: 'Pengaturan',
+        about: 'Tentang Mountify'
       };
       document.getElementById('page-title').textContent = titles[name] || 'Mountify';
     }
