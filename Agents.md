@@ -56,7 +56,7 @@ Mountify memecahkan masalah ini dengan menghubungkan direktori data game di part
 | **FR-04: Dynamic Bind Mount Engine** | Mengeksekusi bind-mount ke seluruh 7 namespace runtime Android, menetapkan hak akses Linux UID sandbox, dan menyetel context SELinux `u:object_r:media_rw_data_file:s0`. |
 | **FR-05: Physical Data Migration** | Menyalin data fisik game antara Internal Storage (`/data/media/0/Android/data/...`) dan MicroSD (`/data/sdext2/Android/data/...`) langsung dari UI dengan verifikasi integritas sebelum penghapusan data lama. |
 | **FR-06: Partition & Formatter** | Memindai blok partisi (`mmcblk*`, `sd*`). Menyediakan opsi pemformatan cepat ke **F2FS** (Direkomendasikan) atau **Ext4** dengan konfirmasi pencegahan insiden format yang tidak disengaja. |
-| **FR-07: Real-time Log Viewer** | Menampilkan log aktivitas mount secara langsung (*live tail*) dari `/storage/emulated/0/ExtGameStorage.log` dan `/data/adb/modules/Mountify/mountify.log` dengan filter warna level log (Info, Success, Error, Debug). |
+| **FR-07: Real-time Log Viewer** | Menampilkan log aktivitas mount secara langsung (*live tail*) dari `/storage/emulated/0/mountify.log` dan `/data/adb/modules/Mountify/mountify.log` dengan filter warna level log (Info, Success, Error, Debug). |
 | **FR-08: Backup & Restore JSON** | Mengekspor dan mengimpor konfigurasi daftar game dalam format JSON via Android Storage Access Framework (SAF). |
 | **FR-09: Update Checker** | Memeriksa ketersediaan versi rilis baru dari endpoint GitHub Releases API dan menyediakan tautan unduh langsung. |
 | **FR-10: Boot Automation** | Layanan `BootReceiver` + `MountService` Foreground Service untuk melakukan auto-mount otomatis saat booting perangkat selesai. |
@@ -184,7 +184,7 @@ module/
    - `/data/media/0`
 3. **Mirror Logging**: Setiap log event di `service.sh` wajib ditulis ke dua tempat:
    - `/data/adb/modules/Mountify/mountify.log`
-   - `/storage/emulated/0/ExtGameStorage.log` (agar aplikasi dapat membacanya langsung).
+   - `/storage/emulated/0/mountify.log` (agar aplikasi dapat membacanya langsung).
 
 ---
 
@@ -237,6 +237,7 @@ module/
 ## 10. CHECKLIST LARANGAN KERAS (GOLDEN RULES FOR AI AGENTS)
 
 Saat mengedit repositori Mountify, AI Agent **DILARANG KERAS**:
+- ❌ **Menggunakan nama lama "ExtGameStorage" di mana pun** (kode program, komentar, path file, log, commit message, maupun dokumentasi). Nama resmi satu-satunya adalah **Mountify**.
 - ❌ Mengubah nama package `app.mihon` atau nama aplikasi `Mountify` tanpa persetujuan tertulis.
 - ❌ Menghapus data game pada internal storage sebelum memverifikasi keberhasilan penyalinan di target MicroSD.
 - ❌ Menjalankan operasi format tanpa konfirmasi dialog berlapis di UI.
