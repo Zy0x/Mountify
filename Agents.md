@@ -2,7 +2,7 @@
 
 > **Status Dokumen**: Mandatory (Wajib Dipatuhi Tanpa Pengecualian)  
 > **Target Proyek**: Mountify (Android Native App & Modul Root Magisk/KernelSU/APatch)  
-> **Package ID**: `app.mihon`  
+> **Package ID**: `app.mountify`  
 > **Author & Maintainer**: Noir ([@Zy0x](https://github.com/Zy0x))  
 > **Repositori**: [https://github.com/Zy0x/Mountify](https://github.com/Zy0x/Mountify)  
 
@@ -28,7 +28,7 @@ Dokumen ini berfungsi sebagai spesifikasi teknis tunggal, standar arsitektur sis
 
 ### 1.1 Identitas Resmi
 - **Nama Aplikasi**: `Mountify`
-- **Application ID / Package**: `app.mihon`
+- **Application ID / Package**: `app.mountify`
 - **Nama Modul Root**: `Mountify`
 - **Target OS**: Android 10 (API 29) hingga Android 15+ (API 35+)
 - **Dukungan Root**: Magisk, KernelSU, APatch
@@ -122,7 +122,7 @@ Seluruh komponen Jetpack Compose wajib mematuhi parameter berikut:
 Mountify menerapkan arsitektur modular **Clean Architecture** dan **MVVM**:
 
 ```
-app/src/main/java/app/mihon/
+app/src/main/java/app/mountify/
 ├── data/
 │   ├── db/          # Room AppDatabase & GameDao (Single source of truth)
 │   ├── model/       # Data classes, Room Entities, Enums
@@ -139,7 +139,7 @@ app/src/main/java/app/mihon/
 2. **State Management**: Gunakan `StateFlow` pada ViewModel dan konsumsi di Compose menggunakan `collectAsState()`.
 3. **Basis Data**: Room database adalah sumber kebenaran tunggal (*single source of truth*) status lokal.
 4. **Dependency Injection**: Seluruh komponen dikelola melalui Hilt (`@Inject`, `@Singleton`, `@HiltViewModel`).
-5. **Konsistensi Paket**: Package root adalah `app.mihon`.
+5. **Konsistensi Paket**: Package root adalah `app.mountify`.
 
 ---
 
