@@ -109,6 +109,10 @@ Dilarang menggunakan komponen default Material Design yang berukuran besar/membe
    - Tinggi item menu wajib **30–34 dp** (standar resmi: **32 dp**), padding horizontal 10–12 dp, sudut membulat 8 dp, label teks 11.5–12sp, ikon indikator 14 dp.
    - Dilarang menggunakan default `DropdownMenuItem` (48 dp) atau menu yang memicu whitespace raksasa dan tidak proporsional.
    - Menggunakan `containerColor = MaterialTheme.colorScheme.surface`, border halus, dan shadow kompak (3–4 dp).
+8. **Dialog & Pop-up Overlays**:
+   - **Margin Sisi**: Kartu dialog wajib memiliki margin horizontal **24–28 dp** dari tepi layar. Dilarang keras menempel atau mepet ke tepi kiri/kanan layar.
+   - **Modern Backdrop Blur**: Wajib menyertakan efek blur latar belakang (`Modifier.blur(16.dp)`) dengan transisi animasi halus dan scrim semi-transparan (`Color.Black.copy(alpha = 0.45f)`).
+   - **Bentuk Kartu**: Sudut membulat 14–16 dp, border halus `outlineVariant`, dan shadow elevasi modern (6–8 dp).
 
 ---
 
