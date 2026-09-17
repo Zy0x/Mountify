@@ -91,6 +91,21 @@ Seluruh komponen Jetpack Compose wajib mematuhi parameter berikut:
 - Durasi transisi visual berada dalam rentang **150–350 ms**.
 - Animasi harus ringan dan tidak membebani GPU perangkat berspesifikasi rendah.
 
+### 3.5 Standar Proporsi & Dimensi Kompak UI (Anti UI-Bloat)
+Dilarang menggunakan komponen default Material Design yang berukuran besar/membengkak (*bloated*) tanpa penyesuaian proporsi. Seluruh komponen wajib mengikuti standar dimensi kompak Mountify:
+1. **Screen Header**: Wajib menggunakan `CompactScreenHeader` (~46 dp tinggi visual + `statusBarsPadding()`), ukuran judul 16–17sp tebal, icon navigasi 18–20 dp. Dilarang menggunakan default `TopAppBar` (64 dp) yang membuang ruang vertikal layar.
+2. **Search Bar Kompak**: Tinggi visual wajib **36–40 dp** (standar resmi: **38 dp**) menggunakan `Surface(RoundedCornerShape(10.dp))` + `BasicTextField` horizontal padding 10 dp, icon search 16 dp, placeholder 12sp. Dilarang menggunakan default `OutlinedTextField` (56 dp) yang terlalu tinggi dan memakan ruang.
+3. **Filter Chips & Kategori**: Tinggi visual **28–32 dp** (standar resmi: **30 dp**), sudut membulat 8 dp, label teks 11–12sp, ikon chip 13–15 dp, padding horizontal 8–10 dp. Hindari default `FilterChip` bawaan Material yang tingginya mencapai 48 dp.
+4. **Tombol Aksi & CTA**: Tinggi visual **40–44 dp** untuk CTA utama (dengan `AuroraGradientBrush` atau warna tema), dan **32–36 dp** untuk tombol sekunder/utilitas. Teks tombol 13–14sp tebal.
+5. **Proporsi Ikon**:
+   - Ikon navigasi / top action: **18–20 dp**
+   - Ikon search bar / chip / inline: **14–16 dp**
+   - Ikon aplikasi dalam daftar: **36–40 dp**
+   - Dilarang keras menampilkan ikon berukuran raksasa yang mendominasi tata letak.
+6. **Arsitektur Layar Penuh (Sub-screens & Pickers)**:
+   - Sub-screen (seperti App Picker) wajib dibangun sebagai composable layar penuh native langsung di dalam pohon navigasi/Scaffold, **BUKAN** sebagai popup `Dialog` jendela Android.
+   - Hal ini untuk mencegah munculnya margin jendela floating, celah kosong di bagian atas status bar, atau latar belakang yang bocor di sisi kiri/kanan.
+
 ---
 
 ## 4. PROTOKOL KEAMANAN TINGKAT TINGGI & OPERASI ROOT
