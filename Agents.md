@@ -105,6 +105,10 @@ Dilarang menggunakan komponen default Material Design yang berukuran besar/membe
 6. **Arsitektur Layar Penuh (Sub-screens & Pickers)**:
    - Sub-screen (seperti App Picker) wajib dibangun sebagai composable layar penuh native langsung di dalam pohon navigasi/Scaffold, **BUKAN** sebagai popup `Dialog` jendela Android.
    - Hal ini untuk mencegah munculnya margin jendela floating, celah kosong di bagian atas status bar, atau latar belakang yang bocor di sisi kiri/kanan.
+7. **Dropdown Menus & Popup**:
+   - Tinggi item menu wajib **30–34 dp** (standar resmi: **32 dp**), padding horizontal 10–12 dp, sudut membulat 8 dp, label teks 11.5–12sp, ikon indikator 14 dp.
+   - Dilarang menggunakan default `DropdownMenuItem` (48 dp) atau menu yang memicu whitespace raksasa dan tidak proporsional.
+   - Menggunakan `containerColor = MaterialTheme.colorScheme.surface`, border halus, dan shadow kompak (3–4 dp).
 
 ---
 
