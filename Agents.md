@@ -289,7 +289,12 @@ Seluruh sesi pengujian (testing) wajib menyertakan tangkapan layar (screenshot) 
 ### 11.4 Standar Kualitas Screenshot
 - Screenshot wajib menampilkan area yang relevan dengan skenario pengujian secara penuh tanpa terpotong.
 - Nama file screenshot menggunakan format: `test_<fitur>_<state>_<timestamp>.png` (huruf kecil, underscore).
-- Jika layar emulator atau preview menampilkan overlay notifikasi sistem yang tidak relevan, ambil screenshot ulang dalam kondisi bersih.
+- **Wajib menunggu hingga seluruh notifikasi sistem (toast, snackbar, status bar notification, popup overlay) benar-benar hilang dari layar sebelum mengambil screenshot.** Tidak ada toleransi terhadap notifikasi yang menghalangi atau menutupi sebagian tampilan aplikasi.
+- Prosedur sebelum shutter:
+  1. Amati layar selama minimal **2–3 detik** setelah aksi terakhir untuk memastikan semua animasi dan notifikasi transien selesai.
+  2. Jika notifikasi masih terlihat, tunggu hingga hilang secara alami atau dismiss secara eksplisit (swipe/dismiss via ADB: `adb shell input swipe 900 100 900 600`).
+  3. Baru ambil screenshot setelah layar dalam kondisi bersih penuh.
+- Jika setelah menunggu notifikasi tetap tidak hilang, ambil screenshot ulang hingga kondisi layar benar-benar bersih, maksimal **3 kali percobaan** sebelum melaporkan kendala kepada maintainer.
 
 ### 11.5 Larangan
 - **Dilarang** menyimpulkan hasil pengujian hanya berdasarkan teks log tanpa screenshot sebagai bukti visual, kecuali pengujian bersifat murni unit test tanpa antarmuka grafis.
