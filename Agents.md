@@ -21,6 +21,7 @@ Dokumen ini berfungsi sebagai spesifikasi teknis tunggal, standar arsitektur sis
 8. [Protokol Git, Commit, Push, dan Kebijakan Perilisan](#8-protokol-git-commit-push-dan-kebijakan-perilisan)
 9. [Standar CI/CD & Keamanan Kredensial](#9-standar-cicd--keamanan-kredensial)
 10. [Kebijakan Anti-AI Slop & Larangan Mutlak](#10-kebijakan-anti-ai-slop--larangan-mutlak)
+11. [Protokol Screenshot & Pelaporan Hasil Testing](#11-protokol-screenshot--pelaporan-hasil-testing)
 
 ---
 
@@ -245,3 +246,52 @@ Seluruh kontributor dan agen pengembangan wajib mematuhi batasan berikut:
 4. **Larangan Referensi Lama**: Dilarang menggunakan nama lama proyek. Nama resmi satu-satunya adalah **Mountify**.
 5. **Larangan Penghapusan Data Tanpa Verifikasi**: Dilarang menghapus berkas penyimpanan internal sebelum verifikasi salinan pada MicroSD selesai dengan valid.
 6. **Larangan Blocking Thread**: Dilarang memanggil perintah shell atau I/O pada `Dispatchers.Main`.
+
+---
+
+## 11. PROTOKOL SCREENSHOT & PELAPORAN HASIL TESTING
+
+Seluruh sesi pengujian (testing) wajib menyertakan tangkapan layar (screenshot) sebagai bukti visual dan bahan review oleh maintainer.
+
+### 11.1 Kewajiban Screenshot
+- Setiap kali menjalankan pengujian — baik pengujian UI, build verification, emulator run, maupun pengujian fitur apa pun — agen **wajib** mengambil screenshot layar pada titik-titik kritis berikut:
+  1. **Sebelum pengujian**: kondisi awal (initial state).
+  2. **Selama pengujian**: tangkap setiap layar atau state yang diuji (misalnya: tampilan screen utama, dialog, hasil operasi mount, log viewer, dsb.).
+  3. **Setelah pengujian**: kondisi akhir (final state / hasil), termasuk layar sukses atau pesan error.
+
+### 11.2 Kewajiban Pelaporan Visual
+- Seluruh screenshot yang diambil **wajib ditampilkan di akhir respons** sebagai bagian dari laporan testing.
+- Format penyajian screenshot dalam laporan:
+  ```
+  ### Hasil Testing — [Nama Fitur / Skenario]
+  
+  **[1] Initial State**
+  ![Initial State](<path-atau-embed-screenshot>)
+  
+  **[2] During Test — [Nama State/Layar]**
+  ![During Test](<path-atau-embed-screenshot>)
+  
+  **[3] Final Result**
+  ![Final Result](<path-atau-embed-screenshot>)
+  ```
+- Jika lebih dari satu skenario diuji dalam satu sesi, setiap skenario memiliki blok laporan tersendiri.
+
+### 11.3 Metode Pengambilan Screenshot
+- Untuk pengujian via **emulator Android** (Android Studio / AVD): gunakan perintah ADB berikut untuk mengambil screenshot:
+  ```bash
+  adb exec-out screencap -p > test_<nama_skenario>_<timestamp>.png
+  ```
+- Untuk pengujian via **Chrome DevTools / browser preview**: gunakan MCP tool `take_screenshot` dari server `chrome-devtools-mcp`.
+- Untuk pengujian via **Playwright / browser automation**: gunakan MCP tool `browser_take_screenshot` dari server `playwright`.
+- Untuk pengujian **desktop / sistem lokal**: gunakan MCP tool `computer` dari server `computer-use`.
+- Screenshot disimpan sementara di direktori `<appDataDir>/brain/<conversation-id>/screenshots/` sebelum disajikan dalam laporan.
+
+### 11.4 Standar Kualitas Screenshot
+- Screenshot wajib menampilkan area yang relevan dengan skenario pengujian secara penuh tanpa terpotong.
+- Nama file screenshot menggunakan format: `test_<fitur>_<state>_<timestamp>.png` (huruf kecil, underscore).
+- Jika layar emulator atau preview menampilkan overlay notifikasi sistem yang tidak relevan, ambil screenshot ulang dalam kondisi bersih.
+
+### 11.5 Larangan
+- **Dilarang** menyimpulkan hasil pengujian hanya berdasarkan teks log tanpa screenshot sebagai bukti visual, kecuali pengujian bersifat murni unit test tanpa antarmuka grafis.
+- **Dilarang** menyelesaikan sesi testing tanpa menampilkan screenshot hasil akhir kepada maintainer untuk review.
+
