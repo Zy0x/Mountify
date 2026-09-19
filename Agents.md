@@ -4,7 +4,7 @@
 > **Target Proyek**: MountX (Android Native App & Modul Root Magisk/KernelSU/APatch)  
 > **Package ID**: `app.mountx`  
 > **Author & Maintainer**: Noir ([@Zy0x](https://github.com/Zy0x))  
-> **Repositori**: [https://github.com/Zy0x/Mountify](https://github.com/Zy0x/Mountify)  
+> **Repositori**: [https://github.com/Zy0x/MountX](https://github.com/Zy0x/MountX)  
 > **Identitas Folder / Direktori Proyek**: `MountX`
 
 Dokumen ini berfungsi sebagai spesifikasi teknis tunggal, standar arsitektur sistem, pedoman keselamatan operasi root, aturan antarmuka grafis, serta Product Requirements Document (PRD) yang mengikat seluruh agen pengembangan dan kontributor repositori MountX.
@@ -34,7 +34,7 @@ Dokumen ini berfungsi sebagai spesifikasi teknis tunggal, standar arsitektur sis
 - **Nama Modul Root**: `MountX` (dengan dukungan backward compatibility modul lama `Mountify`)
 - **Target OS**: Android 10 (API 29) hingga Android 15+ (API 35+)
 - **Dukungan Root**: Magisk, KernelSU, APatch
-- **Nama Proyek & Direktori**: Nama resmi tunggal adalah **MountX** (lokasi folder proyek: `MountX`). Seluruh file konfigurasi, `settings.gradle.kts` (`rootProject.name = "MountX"`), strings, package (`app.mountx`), dan antarmuka pengguna Wajib menggunakan **MountX**. Remote upstream repositori GitHub adalah `Zy0x/Mountify`.
+- **Nama Proyek & Direktori**: Nama resmi tunggal adalah **MountX** (lokasi folder proyek: `MountX`). Seluruh file konfigurasi, `settings.gradle.kts` (`rootProject.name = "MountX"`), strings, package (`app.mountx`), dan antarmuka pengguna Wajib menggunakan **MountX**. Repositori GitHub resmi adalah `Zy0x/MountX`.
 
 ### 1.2 Masalah Pokok yang Dipecahkan
 Sejak Android 10, pembatasan penyimpanan sistem (Scoped Storage) mencegah pemindahan data game ke kartu MicroSD. Game berkapasitas besar (20 GB hingga 40 GB+) membebani penyimpanan internal. 
