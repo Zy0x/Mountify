@@ -1,12 +1,13 @@
-# AGENTS.md — Standar Operasional Teknis & Pedoman Sistem: Mountify
+# AGENTS.md — Standar Operasional Teknis & Pedoman Sistem: MountX
 
 > **Status Dokumen**: Mandatory (Wajib Dipatuhi Tanpa Pengecualian)  
-> **Target Proyek**: Mountify (Android Native App & Modul Root Magisk/KernelSU/APatch)  
-> **Package ID**: `app.mountify`  
+> **Target Proyek**: MountX (Android Native App & Modul Root Magisk/KernelSU/APatch)  
+> **Package ID**: `app.mountx`  
 > **Author & Maintainer**: Noir ([@Zy0x](https://github.com/Zy0x))  
 > **Repositori**: [https://github.com/Zy0x/Mountify](https://github.com/Zy0x/Mountify)  
+> **Identitas Folder / Direktori Proyek**: `MountX` (atau `Mountify` pada path clone repositori GitHub lokal)
 
-Dokumen ini berfungsi sebagai spesifikasi teknis tunggal, standar arsitektur sistem, pedoman keselamatan operasi root, aturan antarmuka grafis, serta Product Requirements Document (PRD) yang mengikat seluruh agen pengembangan dan kontributor repositori Mountify.
+Dokumen ini berfungsi sebagai spesifikasi teknis tunggal, standar arsitektur sistem, pedoman keselamatan operasi root, aturan antarmuka grafis, serta Product Requirements Document (PRD) yang mengikat seluruh agen pengembangan dan kontributor repositori MountX.
 
 ---
 
@@ -28,16 +29,17 @@ Dokumen ini berfungsi sebagai spesifikasi teknis tunggal, standar arsitektur sis
 ## 1. IDENTITAS & FILOSOFI PROYEK
 
 ### 1.1 Identitas Resmi
-- **Nama Aplikasi**: `Mountify`
-- **Application ID / Package**: `app.mountify`
-- **Nama Modul Root**: `Mountify`
+- **Nama Aplikasi**: `MountX` (resmi direbrand dari nama lama `Mountify` sejak v2.2.0+)
+- **Application ID / Package**: `app.mountx`
+- **Nama Modul Root**: `MountX` (dengan dukungan backward compatibility modul lama `Mountify`)
 - **Target OS**: Android 10 (API 29) hingga Android 15+ (API 35+)
 - **Dukungan Root**: Magisk, KernelSU, APatch
+- **Nama Proyek & Direktori**: Nama resmi tunggal adalah **MountX**. Jika folder lokal berada pada `Mountify` (karena nama git remote upstream `Zy0x/Mountify`), seluruh file konfigurasi, `settings.gradle.kts` (`rootProject.name = "MountX"`), strings, package, dan antarmuka pengguna Wajib menggunakan **MountX**.
 
 ### 1.2 Masalah Pokok yang Dipecahkan
 Sejak Android 10, pembatasan penyimpanan sistem (Scoped Storage) mencegah pemindahan data game ke kartu MicroSD. Game berkapasitas besar (20 GB hingga 40 GB+) membebani penyimpanan internal. 
 
-Mountify mengalihkan data game dari partisi sekunder MicroSD berformat Linux (F2FS atau Ext4) ke penyimpanan internal melalui bind-mount pada seluruh namespace runtime Android secara transparan tanpa memicu galat FUSE cross-device.
+MountX mengalihkan data game dari partisi sekunder MicroSD berformat Linux (F2FS atau Ext4) ke penyimpanan internal melalui bind-mount pada seluruh namespace runtime Android secara transparan tanpa memicu galat FUSE cross-device.
 
 ---
 
@@ -51,13 +53,13 @@ Mountify mengalihkan data game dari partisi sekunder MicroSD berformat Linux (F2
 
 | Kode | Modul Fitur | Spesifikasi Kebutuhan |
 |---|---|---|
-| **FR-01** | Root & Module Detector | Mendeteksi ketersediaan root dan jenis engine aktif (Magisk, KernelSU, APatch). Memverifikasi integritas direktori modul di `/data/adb/modules/Mountify`. |
+| **FR-01** | Root & Module Detector | Mendeteksi ketersediaan root dan jenis engine aktif (Magisk, KernelSU, APatch). Memverifikasi integritas direktori modul di `/data/adb/modules/MountX` (dengan fallback `/data/adb/modules/Mountify`). |
 | **FR-02** | Game Registry | Operasi CRUD daftar game dengan opsi mode mount (`PKG` atau `FILES`). Pencarian dan deteksi otomatis aplikasi terpasang via Android `PackageManager`. |
 | **FR-03** | Dual Mount Mode | 1. **Mode PKG**: Bind-mount seluruh direktori `Android/data/<package>` (contoh: Wuthering Waves, PUBG Mobile).<br>2. **Mode FILES**: Bind-mount hanya subdirektori `/files`, menjaga basis data lokal tetap pada penyimpanan internal (contoh: Honkai: Star Rail, Genshin Impact). |
 | **FR-04** | Dynamic Bind Mount Engine | Mengeksekusi bind-mount ke 7 namespace runtime Android, menetapkan hak akses Linux UID sandbox, dan menyetel context SELinux `u:object_r:media_rw_data_file:s0`. |
 | **FR-05** | Physical Data Migration | Menyalin data fisik game antara penyimpanan internal (`/data/media/0/Android/data/...`) dan MicroSD (`/data/sdext2/Android/data/...`) dengan verifikasi integritas berkas sebelum pembersihan direktori asal. |
 | **FR-06** | Partition & Formatter | Memindai blok partisi (`mmcblk*`, `sd*`). Menyediakan opsi pemformatan ke F2FS atau Ext4 dengan dialog konfirmasi pengamanan. |
-| **FR-07** | Real-time Log Viewer | Menampilkan log aktivitas secara langsung (*live tail*) dari `/storage/emulated/0/mountify.log` dan `/data/adb/modules/Mountify/mountify.log` dengan penanda level (Info, Success, Error, Debug). |
+| **FR-07** | Real-time Log Viewer | Menampilkan log aktivitas secara langsung (*live tail*) dari `/storage/emulated/0/mountx.log` dan `/data/adb/modules/MountX/mountx.log` (dengan fallback log `mountify.log`) dengan penanda level (Info, Success, Error, Debug, Warn). |
 | **FR-08** | Backup & Restore JSON | Ekspor dan impor konfigurasi daftar game dalam format JSON melalui Storage Access Framework (SAF). |
 | **FR-09** | Update Checker | Pengecekan versi rilis baru secara langsung dari endpoint GitHub Releases API. |
 | **FR-10** | Boot Automation | Layanan `BootReceiver` dan `MountService` Foreground Service untuk auto-mount saat booting sistem selesai. |
@@ -93,7 +95,7 @@ Seluruh komponen Jetpack Compose wajib mematuhi parameter berikut:
 - Animasi harus ringan dan tidak membebani GPU perangkat berspesifikasi rendah.
 
 ### 3.5 Standar Proporsi & Dimensi Kompak UI (Anti UI-Bloat)
-Dilarang menggunakan komponen default Material Design yang berukuran besar/membengkak (*bloated*) tanpa penyesuaian proporsi. Seluruh komponen wajib mengikuti standar dimensi kompak Mountify:
+Dilarang menggunakan komponen default Material Design yang berukuran besar/membengkak (*bloated*) tanpa penyesuaian proporsi. Seluruh komponen wajib mengikuti standar dimensi kompak MountX:
 1. **Screen Header**: Wajib menggunakan `CompactScreenHeader` (~46 dp tinggi visual + `statusBarsPadding()`), ukuran judul 16–17sp tebal, icon navigasi 18–20 dp. Dilarang menggunakan default `TopAppBar` (64 dp) yang membuang ruang vertikal layar.
 2. **Search Bar Kompak**: Tinggi visual wajib **36–40 dp** (standar resmi: **38 dp**) menggunakan `Surface(RoundedCornerShape(10.dp))` + `BasicTextField` horizontal padding 10 dp, icon search 16 dp, placeholder 12sp. Dilarang menggunakan default `OutlinedTextField` (56 dp) yang terlalu tinggi dan memakan ruang.
 3. **Filter Chips & Kategori**: Tinggi visual **28–32 dp** (standar resmi: **30 dp**), sudut membulat 8 dp, label teks 11–12sp, ikon chip 13–15 dp, padding horizontal 8–10 dp. Hindari default `FilterChip` bawaan Material yang tingginya mencapai 48 dp.
@@ -143,10 +145,10 @@ Dilarang menggunakan komponen default Material Design yang berukuran besar/membe
 
 ## 5. STANDAR ARSITEKTUR KODE & DISIPLIN TECH STACK
 
-Mountify menerapkan arsitektur modular **Clean Architecture** dan **MVVM**:
+MountX menerapkan arsitektur modular **Clean Architecture** dan **MVVM**:
 
 ```
-app/src/main/java/app/mountify/
+app/src/main/java/app/mountx/
 ├── data/
 │   ├── db/          # Room AppDatabase & GameDao (Single source of truth)
 │   ├── model/       # Data classes, Room Entities, Enums
@@ -155,7 +157,7 @@ app/src/main/java/app/mountify/
 ├── root/            # Engine Shell libsu (RootShell, RootDetector, MountManager, StorageManager)
 ├── service/         # Android Services (MountService, BootReceiver)
 ├── ui/              # Jetpack Compose UI Screens, ViewModels, Theme, Components
-└── util/            # AppPreferences, UpdateChecker, FormatUtils
+└── util/            # AppPreferences, AppLogger, UpdateChecker, FormatUtils
 ```
 
 ### 5.1 Aturan Penulisan Kotlin & Coroutines
@@ -163,7 +165,7 @@ app/src/main/java/app/mountify/
 2. **State Management**: Gunakan `StateFlow` pada ViewModel dan konsumsi di Compose menggunakan `collectAsState()`.
 3. **Basis Data**: Room database adalah sumber kebenaran tunggal (*single source of truth*) status lokal.
 4. **Dependency Injection**: Seluruh komponen dikelola melalui Hilt (`@Inject`, `@Singleton`, `@HiltViewModel`).
-5. **Konsistensi Paket**: Package root adalah `app.mountify`.
+5. **Konsistensi Paket**: Package root adalah `app.mountx`.
 
 ---
 
@@ -188,7 +190,7 @@ module/
    - `/mnt/user/0/primary`
    - `/storage/emulated/0`
    - `/data/media/0`
-3. Log sistem dicatat secara simultan ke `/data/adb/modules/Mountify/mountify.log` dan `/storage/emulated/0/mountify.log`.
+3. Log sistem dicatat secara simultan ke `/data/adb/modules/MountX/mountx.log` dan `/storage/emulated/0/mountx.log` (dengan kompatibilitas modul legacy di `/data/adb/modules/Mountify/mountify.log`).
 
 ---
 
@@ -243,7 +245,11 @@ Seluruh kontributor dan agen pengembangan wajib mematuhi batasan berikut:
    - Komentar dalam skrip dan kode program murni berfungsi sebagai:
      a. Penanda judul seksi teknis (contoh: `# ── Storage Mount ──` atau `// Section: Storage State`).
      b. Penjelasan logika non-trivial yang ringkas dan profesional.
-4. **Larangan Referensi Lama**: Dilarang menggunakan nama lama proyek. Nama resmi satu-satunya adalah **Mountify**.
+4. **Larangan Referensi Lama & Penegakan Rebrand MountX**:
+   - Dilarang keras membatalkan (revert) atau mengubah nama proyek dari **MountX** kembali ke nama lama (**Mountify**).
+   - Nama resmi satu-satunya sekarang adalah **MountX**.
+   - Seluruh teks antarmuka, strings (`app_name`, `dashboard_title`, dsb.), konfigurasi, notifikasi, dan dokumentasi wajib menggunakan **MountX** tanpa pengecualian.
+   - Jika repositori GitHub atau folder lokal bernama `Mountify`, ini hanya nama direktori/remote upstream, sedangkan nama produk, modul, dan aplikasi adalah murni **MountX**.
 5. **Larangan Penghapusan Data Tanpa Verifikasi**: Dilarang menghapus berkas penyimpanan internal sebelum verifikasi salinan pada MicroSD selesai dengan valid.
 6. **Larangan Blocking Thread**: Dilarang memanggil perintah shell atau I/O pada `Dispatchers.Main`.
 

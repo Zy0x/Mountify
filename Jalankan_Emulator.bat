@@ -1,27 +1,27 @@
 @echo off
 setlocal
 echo ========================================================
-echo  Mountify - Android Emulator Launcher
+echo  MountX - Android Emulator Launcher
 echo ========================================================
 
-set "MOUNTIFY_ROOT=%~dp0"
-if "%MOUNTIFY_ROOT:~-1%"=="\" set "MOUNTIFY_ROOT=%MOUNTIFY_ROOT:~0,-1%"
+set "MOUNTX_ROOT=%~dp0"
+if "%MOUNTX_ROOT:~-1%"=="\" set "MOUNTX_ROOT=%MOUNTX_ROOT:~0,-1%"
 
 set "AUTOGRAM_TOOLCHAINS=F:\AutoGram\.toolchains"
 set "ANDROID_HOME=%AUTOGRAM_TOOLCHAINS%\android-sdk"
 set "ANDROID_SDK_ROOT=%AUTOGRAM_TOOLCHAINS%\android-sdk"
 set "JAVA_HOME=%AUTOGRAM_TOOLCHAINS%\jdk-17"
 
-:: Isolasi AVD dan cache Mountify di Drive E:
-set "ANDROID_USER_HOME=%MOUNTIFY_ROOT%\.build-cache\android"
-set "ANDROID_AVD_HOME=%MOUNTIFY_ROOT%\.build-cache\android\avd"
-set "TEMP=%MOUNTIFY_ROOT%\.build-cache\temp"
-set "TMP=%MOUNTIFY_ROOT%\.build-cache\temp"
+:: Isolasi AVD dan cache MountX di Drive E:
+set "ANDROID_USER_HOME=%MOUNTX_ROOT%\.build-cache\android"
+set "ANDROID_AVD_HOME=%MOUNTX_ROOT%\.build-cache\android\avd"
+set "TEMP=%MOUNTX_ROOT%\.build-cache\temp"
+set "TMP=%MOUNTX_ROOT%\.build-cache\temp"
 
 if not exist "%ANDROID_AVD_HOME%" mkdir "%ANDROID_AVD_HOME%"
 if not exist "%TEMP%" mkdir "%TEMP%"
 
-set "AVD_NAME=Mountify_Device"
+set "AVD_NAME=MountX_Device"
 
 :: Buat AVD jika belum ada
 if not exist "%ANDROID_AVD_HOME%\%AVD_NAME%.avd" (
@@ -42,10 +42,10 @@ if not "%BOOT%"=="1" (
 )
 
 echo [INFO] Memasang app-debug.apk ke emulator...
-if exist "%MOUNTIFY_ROOT%\app\build\outputs\apk\debug\app-debug.apk" (
-    "%ANDROID_HOME%\platform-tools\adb.exe" install -r "%MOUNTIFY_ROOT%\app\build\outputs\apk\debug\app-debug.apk"
-    echo [INFO] Menjalankan Mountify di emulator...
-    "%ANDROID_HOME%\platform-tools\adb.exe" shell am start -n app.mountify.debug/app.mountify.MainActivity
+if exist "%MOUNTX_ROOT%\app\build\outputs\apk\debug\app-debug.apk" (
+    "%ANDROID_HOME%\platform-tools\adb.exe" install -r "%MOUNTX_ROOT%\app\build\outputs\apk\debug\app-debug.apk"
+    echo [INFO] Menjalankan MountX di emulator...
+    "%ANDROID_HOME%\platform-tools\adb.exe" shell am start -n app.mountx.debug/app.mountx.MainActivity
 ) else (
     echo [WARNING] app-debug.apk belum dikompilasi di app\build\outputs\apk\debug\app-debug.apk
 )
