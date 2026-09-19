@@ -249,7 +249,7 @@ Seluruh kontributor dan agen pengembangan wajib mematuhi batasan berikut:
    - Dilarang keras membatalkan (revert) atau mengubah nama proyek dari **MountX** kembali ke nama lama (**Mountify**).
    - Nama resmi satu-satunya sekarang adalah **MountX**.
    - Seluruh teks antarmuka, strings (`app_name`, `dashboard_title`, dsb.), konfigurasi, notifikasi, dan dokumentasi wajib menggunakan **MountX** tanpa pengecualian.
-   - Jika repositori GitHub atau folder lokal bernama `Mountify`, ini hanya nama direktori/remote upstream, sedangkan nama produk, modul, dan aplikasi adalah murni **MountX**.
+   - Repositori GitHub resmi adalah `https://github.com/Zy0x/MountX`, direktori proyek lokal adalah `MountX`, dan seluruh nama produk, modul, serta aplikasi adalah murni **MountX**.
 5. **Larangan Penghapusan Data Tanpa Verifikasi**: Dilarang menghapus berkas penyimpanan internal sebelum verifikasi salinan pada MicroSD selesai dengan valid.
 6. **Larangan Blocking Thread**: Dilarang memanggil perintah shell atau I/O pada `Dispatchers.Main`.
 
